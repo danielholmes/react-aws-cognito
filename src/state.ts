@@ -9,7 +9,7 @@ type ErrorAuthState = {
   readonly message: string;
 };
 
-type SignedInAuthState<TUser extends AuthAccess> = {
+type SignedInAuthState<TUser> = {
   readonly type: "signedIn";
   readonly user: Omit<TUser, keyof AuthAccess>;
   readonly getValidAccessToken: () => Promise<string>;
@@ -46,7 +46,7 @@ type SignedOutAuthState = {
   readonly requireNewPasswordComplete?: (password: string) => Promise<void>;
 };
 
-type AuthState<TUser extends AuthAccess> =
+type AuthState<TUser> =
   | LoadingAuthState
   | ErrorAuthState
   | SignedInAuthState<TUser>

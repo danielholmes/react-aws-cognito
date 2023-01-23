@@ -7,8 +7,9 @@ import {
 } from "amazon-cognito-identity-js";
 import { InternalAuthStateSetter } from "./internal-state";
 import { getUserData, UserParser } from "./get-current-user";
+import { AuthAccess } from "./session-to-auth-access";
 
-async function signIn<TUser>(
+async function signIn<TUser extends AuthAccess>(
   setInternalAuthState: InternalAuthStateSetter<TUser>,
   {
     userPool,

@@ -5,15 +5,19 @@ import {
   UserData,
 } from "amazon-cognito-identity-js";
 import invariant from "tiny-invariant";
+import { AuthAccess } from "./session-to-auth-access";
 
 type UserBundle<TUser> = {
   readonly cognitoUser: CognitoUser;
   readonly authUser: TUser;
 };
 
-type UserParser<TUser> = (data: UserData, session: CognitoUserSession) => TUser;
+type UserParser<TUser extends AuthAccess> = (
+  data: UserData,
+  session: CognitoUserSession
+) => TUser;
 
-async function baseGetUserData<TUser>(
+async function baseGetUserData<TUser extends AuthAccess>(
   user: CognitoUser,
   parseUser: UserParser<TUser>,
   bypassCache: boolean
@@ -41,21 +45,21 @@ async function baseGetUserData<TUser>(
   });
 }
 
-async function getUserDataNoCache<TUser>(
+async function getUserDataNoCache<TUser extends AuthAccess>(
   user: CognitoUser,
   parseUser: UserParser<TUser>
 ): Promise<TUser> {
   return baseGetUserData(user, parseUser, true);
 }
 
-async function getUserData<TUser>(
+async function getUserData<TUser extends AuthAccess>(
   user: CognitoUser,
   parseUser: UserParser<TUser>
 ): Promise<TUser> {
   return baseGetUserData(user, parseUser, false);
 }
 
-async function getCurrentUser<TUser>(
+async function getCurrentUser<TUser extends AuthAccess>(
   userPool: CognitoUserPool,
   parseUser: UserParser<TUser>
 ): Promise<UserBundle<TUser> | undefined> {

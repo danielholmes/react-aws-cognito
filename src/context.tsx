@@ -11,6 +11,7 @@ import {
   CognitoUserPool,
   CognitoUserSession,
   NodeCallback,
+  UserData,
 } from "amazon-cognito-identity-js";
 import { omit, partial } from "lodash-es";
 import { sub, isFuture } from "date-fns";
@@ -22,14 +23,11 @@ import { AuthState, SignedInAuthState, SignedOutAuthState } from "./state";
 import { InternalAuthState } from "./model/internal-state";
 import getCurrentUser, {
   getUserDataNoCache,
-  UserParser,
 } from "./model/get-current-user";
 import forgotPassword from "./model/forgot-password";
 import changePassword from "./model/change-password";
 import confirmForgotPassword from "./model/confirm-forgot-password";
-import sessionToAuthAccess, {
-  AuthAccess,
-} from "./model/session-to-auth-access";
+import sessionToAuthAccess, { AuthAccess } from "./model/session-to-auth-access";
 import refreshSession from "./model/refresh-session";
 import signUp from "./model/sign-up";
 import confirmSignUp from "./model/confirm-sign-up";
@@ -45,24 +43,31 @@ type AuthCognitoConfig = {
   readonly userPoolClientId: string;
 };
 
-type AuthProviderProps<TUser extends AuthAccess> = {
-  readonly parseUser: UserParser<TUser>;
+type AuthProviderProps<TUser> = {
+  readonly parseUser: (data: UserData) => TUser;
   readonly cognitoConfig: AuthCognitoConfig;
   readonly children: ReactNode;
 };
 
 const storage = window.localStorage;
 
-function AuthProvider<TUser extends AuthAccess>({
+function AuthProvider<TUser>({
   cognitoConfig,
   children,
-  parseUser,
+  parseUser: parseDomainUser,
 }: AuthProviderProps<TUser>) {
   const [internalAuthState, setInternalAuthState] = useState<
-    InternalAuthState<TUser>
+    InternalAuthState<TUser & AuthAccess>
   >({
     type: "loading",
   });
+
+  const parseUser = useCallback((data: UserData, session: CognitoUserSession) => {
+    return {
+      ...parseDomainUser(data),
+      ...sessionToAuthAccess(session),
+    }
+  }, [parseDomainUser]);
 
   const userPool = useMemo(
     () =>
@@ -226,7 +231,7 @@ function AuthProvider<TUser extends AuthAccess>({
   );
 }
 
-function useAuthState<TUser extends AuthAccess>(): AuthState<TUser> {
+function useAuthState<TUser>(): AuthState<TUser> {
   const context = useContext(AuthContext);
   invariant(context, "No Auth Context");
   return context;
@@ -239,7 +244,7 @@ function useSignedOutAuthState(): SignedOutAuthState {
 }
 
 function useSignedInAuthState<
-  TUser extends AuthAccess
+  TUser
 >(): SignedInAuthState<TUser> {
   const state = useAuthState<TUser>();
   invariant(state.type === "signedIn", `Not signed in (was ${state.type})`);
