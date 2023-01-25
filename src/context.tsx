@@ -15,7 +15,7 @@ import {
 } from "amazon-cognito-identity-js";
 import { omit, partial } from "lodash-es";
 import { sub, isFuture } from "date-fns";
-import invariant from "tiny-invariant";
+import invariant from "./invariant";
 import { caughtResultToString } from "@dhau/lang";
 import signIn, { isUserNotConfirmedException } from "./model/sign-in";
 import requireNewPasswordComplete from "./model/require-new-password-complete";

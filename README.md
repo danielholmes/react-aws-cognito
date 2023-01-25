@@ -1,6 +1,6 @@
 # React AWS Cognito
 
-[![Test](https://github.com/danielholmes/dhau-react-aws-cognito/actions/workflows/test.yml/badge.svg)](https://github.com/danielholmes/dhau-react-aws-cognito/actions/workflows/test.yml)
+[![Test](https://github.com/danielholmes/react-aws-cognito/actions/workflows/test.yml/badge.svg)](https://github.com/danielholmes/react-aws-cognito/actions/workflows/test.yml)
 
 Context and hooks to manage an AWS Cognito authenticated user in React.
 

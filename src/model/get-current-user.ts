@@ -4,7 +4,7 @@ import {
   CognitoUserSession,
   UserData,
 } from "amazon-cognito-identity-js";
-import invariant from "tiny-invariant";
+import invariant from "../invariant";
 import { AuthAccess } from "./session-to-auth-access";
 
 type UserBundle<TUser> = {
