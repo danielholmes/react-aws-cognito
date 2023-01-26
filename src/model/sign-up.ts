@@ -19,7 +19,7 @@ async function signUp(
           Value: emailAddress,
         }),
         ...Object.entries(extraAttributes ?? {}).map(
-          ([v, k]) =>
+          ([k, v]) =>
             new CognitoUserAttribute({
               Name: k,
               Value: v,
