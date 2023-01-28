@@ -16,18 +16,18 @@ import {
 import { omit, partial } from "lodash-es";
 import { sub, isFuture } from "date-fns";
 import invariant from "./invariant";
-import { caughtResultToString } from "@dhau/lang";
+import { caughtResultToString } from "@dhau/lang-extras";
 import signIn, { isUserNotConfirmedException } from "./model/sign-in";
 import requireNewPasswordComplete from "./model/require-new-password-complete";
 import { AuthState, SignedInAuthState, SignedOutAuthState } from "./state";
 import { InternalAuthState } from "./model/internal-state";
-import getCurrentUser, {
-  getUserDataNoCache,
-} from "./model/get-current-user";
+import getCurrentUser, { getUserDataNoCache } from "./model/get-current-user";
 import forgotPassword from "./model/forgot-password";
 import changePassword from "./model/change-password";
 import confirmForgotPassword from "./model/confirm-forgot-password";
-import sessionToAuthAccess, { AuthAccess } from "./model/session-to-auth-access";
+import sessionToAuthAccess, {
+  AuthAccess,
+} from "./model/session-to-auth-access";
 import refreshSession from "./model/refresh-session";
 import signUp from "./model/sign-up";
 import confirmSignUp from "./model/confirm-sign-up";
@@ -62,12 +62,15 @@ function AuthProvider<TUser>({
     type: "loading",
   });
 
-  const parseUser = useCallback((data: UserData, session: CognitoUserSession) => {
-    return {
-      ...parseDomainUser(data),
-      ...sessionToAuthAccess(session),
-    }
-  }, [parseDomainUser]);
+  const parseUser = useCallback(
+    (data: UserData, session: CognitoUserSession) => {
+      return {
+        ...parseDomainUser(data),
+        ...sessionToAuthAccess(session),
+      };
+    },
+    [parseDomainUser]
+  );
 
   const userPool = useMemo(
     () =>
@@ -243,9 +246,7 @@ function useSignedOutAuthState(): SignedOutAuthState {
   return state;
 }
 
-function useSignedInAuthState<
-  TUser
->(): SignedInAuthState<TUser> {
+function useSignedInAuthState<TUser>(): SignedInAuthState<TUser> {
   const state = useAuthState<TUser>();
   invariant(state.type === "signedIn", `Not signed in (was ${state.type})`);
   return state;

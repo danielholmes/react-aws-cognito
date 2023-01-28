@@ -1,6 +1,6 @@
 {
   "name": "@dhau/react-aws-cognito",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "type": "module",
   "description": "Context and hooks to manage an AWS Cognito authenticated user in React.",
   "main": "./dist/index.js",
@@ -35,7 +35,7 @@
   "author": "Daniel Holmes",
   "license": "MIT",
   "dependencies": {
-    "@dhau/lang": "^0.0.8",
+    "@dhau/lang-extras": "^0.0.1",
     "date-fns": "^2.29.3"
   },
   "devDependencies": {
