@@ -12,7 +12,7 @@ async function confirmForgotPassword(
   }: { userPool: CognitoUserPool; storage: ICognitoStorage },
   email: string,
   code: string,
-  newPassword: string
+  newPassword: string,
 ): Promise<void> {
   const user = new CognitoUser({
     Username: email,

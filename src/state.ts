@@ -19,11 +19,13 @@ type SignedInAuthState<TUser> = {
   readonly verifyEmailAddress: (code: string) => Promise<void>;
   readonly changePassword: (
     currentPassword: string,
-    newPassword: string
+    newPassword: string,
   ) => Promise<void>;
 };
 
-type SignInResult = "success" | "newPassword";
+type SignInResult =
+  | { readonly type: "success"; readonly accessToken: string }
+  | { readonly type: "newPassword" };
 
 type SignUpVariables = {
   readonly emailAddress: string;
@@ -41,7 +43,7 @@ type SignedOutAuthState = {
   readonly confirmForgotPassword: (
     email: string,
     code: string,
-    newPassword: string
+    newPassword: string,
   ) => Promise<void>;
   readonly requireNewPasswordComplete?: (password: string) => Promise<void>;
 };

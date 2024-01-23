@@ -16,7 +16,7 @@ import {
 import { omit, partial } from "lodash-es";
 import { sub, isFuture } from "date-fns";
 import invariant from "./invariant";
-import { caughtResultToString } from "@dhau/lang-extras";
+import { unknownToString } from "@dhau/lang-extras";
 import signIn, { isUserNotConfirmedException } from "./model/sign-in";
 import requireNewPasswordComplete from "./model/require-new-password-complete";
 import { AuthState, SignedInAuthState, SignedOutAuthState } from "./state";
@@ -69,7 +69,7 @@ function AuthProvider<TUser>({
         ...sessionToAuthAccess(session),
       };
     },
-    [parseDomainUser]
+    [parseDomainUser],
   );
 
   const userPool = useMemo(
@@ -100,9 +100,9 @@ function AuthProvider<TUser>({
           }
 
           callback(error, data);
-        }
+        },
       ),
-    [cognitoConfig]
+    [cognitoConfig],
   );
 
   useEffect(() => {
@@ -114,7 +114,7 @@ function AuthProvider<TUser>({
       } catch (e) {
         setInternalAuthState({
           type: "error",
-          message: caughtResultToString(e),
+          message: unknownToString(e),
         });
       }
       if (!waiting) {
@@ -193,11 +193,11 @@ function AuthProvider<TUser>({
           verifyEmailAddress,
           setInternalAuthState,
           parseUser,
-          user
+          user,
         ),
         resendEmailAddressVerification: partial(
           resendEmailAddressVerification,
-          user
+          user,
         ),
       };
     }
@@ -208,7 +208,7 @@ function AuthProvider<TUser>({
         signIn,
         setInternalAuthState,
         { userPool, storage },
-        parseUser
+        parseUser,
       ),
       signUp: partial(signUp, userPool),
       confirmSignUp: partial(confirmSignUp, userPool, storage),
@@ -224,7 +224,7 @@ function AuthProvider<TUser>({
               requireNewPasswordComplete,
               setInternalAuthState,
               parseUser,
-              internalAuthState.user
+              internalAuthState.user,
             )
           : undefined,
     };

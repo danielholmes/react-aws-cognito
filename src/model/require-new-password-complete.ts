@@ -7,7 +7,7 @@ async function requireNewPasswordComplete<TUser extends AuthAccess>(
   setInternalAuthState: InternalAuthStateSetter<TUser>,
   parser: UserParser<TUser>,
   user: CognitoUser,
-  password: string
+  password: string,
 ): Promise<void> {
   // TODO: Look at source - use UserPool instead
   // https://github.com/aws-amplify/amplify-js/blob/master/packages/

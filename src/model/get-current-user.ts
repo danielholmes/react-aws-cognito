@@ -14,13 +14,13 @@ type UserBundle<TUser> = {
 
 type UserParser<TUser extends AuthAccess> = (
   data: UserData,
-  session: CognitoUserSession
+  session: CognitoUserSession,
 ) => TUser;
 
 async function baseGetUserData<TUser extends AuthAccess>(
   user: CognitoUser,
   parseUser: UserParser<TUser>,
-  bypassCache: boolean
+  bypassCache: boolean,
 ): Promise<TUser> {
   const session = user.getSignInUserSession();
   invariant(session, "User must have session");
@@ -40,28 +40,28 @@ async function baseGetUserData<TUser extends AuthAccess>(
 
         resolve(parseUser(data, session));
       },
-      { bypassCache }
+      { bypassCache },
     );
   });
 }
 
 async function getUserDataNoCache<TUser extends AuthAccess>(
   user: CognitoUser,
-  parseUser: UserParser<TUser>
+  parseUser: UserParser<TUser>,
 ): Promise<TUser> {
   return baseGetUserData(user, parseUser, true);
 }
 
 async function getUserData<TUser extends AuthAccess>(
   user: CognitoUser,
-  parseUser: UserParser<TUser>
+  parseUser: UserParser<TUser>,
 ): Promise<TUser> {
   return baseGetUserData(user, parseUser, false);
 }
 
 async function getCurrentUser<TUser extends AuthAccess>(
   userPool: CognitoUserPool,
-  parseUser: UserParser<TUser>
+  parseUser: UserParser<TUser>,
 ): Promise<UserBundle<TUser> | undefined> {
   const cognitoUser = userPool.getCurrentUser();
   if (!cognitoUser) {
@@ -86,7 +86,7 @@ async function getCurrentUser<TUser extends AuthAccess>(
           cognitoUser,
           authUser,
         });
-      }
+      },
     );
   });
 }

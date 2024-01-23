@@ -7,7 +7,7 @@ async function verifyEmailAddress<TUser extends AuthAccess>(
   setInternalAuthState: InternalAuthStateSetter<TUser>,
   parseUser: UserParser<TUser>,
   user: CognitoUser,
-  code: string
+  code: string,
 ): Promise<void> {
   await new Promise<void>((resolve, reject) => {
     user.verifyAttribute("email", code, {

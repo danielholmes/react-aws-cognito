@@ -6,7 +6,7 @@ import {
 
 async function refreshSession(
   user: CognitoUser,
-  refreshToken: string
+  refreshToken: string,
 ): Promise<string> {
   return new Promise((resolve, reject) => {
     user.refreshSession(
@@ -18,7 +18,7 @@ async function refreshSession(
         }
 
         resolve(data.getAccessToken().getJwtToken());
-      }
+      },
     );
   });
 }
