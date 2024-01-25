@@ -52,11 +52,16 @@ async function getUserDataNoCache<TUser extends AuthAccess>(
   return baseGetUserData(user, parseUser, true);
 }
 
+type GetUserOptions = {
+  readonly bypassCache?: boolean;
+};
+
 async function getUserData<TUser extends AuthAccess>(
   user: CognitoUser,
   parseUser: UserParser<TUser>,
+  options?: GetUserOptions,
 ): Promise<TUser> {
-  return baseGetUserData(user, parseUser, false);
+  return baseGetUserData(user, parseUser, options?.bypassCache ?? false);
 }
 
 async function getCurrentUser<TUser extends AuthAccess>(

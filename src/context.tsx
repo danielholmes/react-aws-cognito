@@ -13,27 +13,23 @@ import {
   NodeCallback,
   UserData,
 } from "amazon-cognito-identity-js";
-import { omit, partial } from "lodash-es";
-import { sub, isFuture } from "date-fns";
-import invariant from "./invariant";
 import { unknownToString } from "@dhau/lang-extras";
-import signIn, { isUserNotConfirmedException } from "./model/sign-in";
-import requireNewPasswordComplete from "./model/require-new-password-complete";
-import { AuthState, SignedInAuthState, SignedOutAuthState } from "./state";
+import invariant from "./invariant";
+import { isUserNotConfirmedException } from "./model/sign-in";
+import { AuthState } from "./state";
 import { InternalAuthState } from "./model/internal-state";
 import getCurrentUser, { getUserDataNoCache } from "./model/get-current-user";
-import forgotPassword from "./model/forgot-password";
-import changePassword from "./model/change-password";
-import confirmForgotPassword from "./model/confirm-forgot-password";
 import sessionToAuthAccess, {
   AuthAccess,
 } from "./model/session-to-auth-access";
-import refreshSession from "./model/refresh-session";
-import signUp from "./model/sign-up";
-import confirmSignUp from "./model/confirm-sign-up";
-import resendConfirmation from "./model/resend-confirmation";
-import resendEmailAddressVerification from "./model/resend-email-address-verification";
-import verifyEmailAddress from "./model/verify-email-address";
+import {
+  SignedInAuthState,
+  createSignedInAuthState,
+} from "./signed-in-auth-state";
+import {
+  SignedOutAuthState,
+  createSignedOutAuthState,
+} from "./signed-out-auth-state";
 
 // Can't type this. context created on file load but user type provided on runtime.
 const AuthContext = createContext<AuthState<any> | undefined>(undefined);
@@ -43,7 +39,7 @@ type AuthCognitoConfig = {
   readonly userPoolClientId: string;
 };
 
-type AuthProviderProps<TUser> = {
+type AuthProviderProps<TUser extends AuthAccess> = {
   readonly parseUser: (data: UserData) => TUser;
   readonly cognitoConfig: AuthCognitoConfig;
   readonly children: ReactNode;
@@ -51,7 +47,7 @@ type AuthProviderProps<TUser> = {
 
 const storage = window.localStorage;
 
-function AuthProvider<TUser>({
+function AuthProvider<TUser extends AuthAccess>({
   cognitoConfig,
   children,
   parseUser: parseDomainUser,
@@ -164,89 +160,44 @@ function AuthProvider<TUser>({
     }
 
     if (internalAuthState.type === "signedIn") {
-      const { authUser, user } = internalAuthState;
-      return {
-        type: "signedIn",
-        async getValidAccessToken() {
-          const { accessToken, accessExpiration, refreshToken } = authUser;
-          const refreshTime = sub(accessExpiration, { minutes: 3 });
-
-          // Refresh time in the future, use current access token.
-          if (isFuture(refreshTime)) {
-            return accessToken;
-          }
-
-          // New token is applied via CognitoUserPool refresh callback, but return the new
-          // refreshed token for immediate use.
-          return refreshSession(user, refreshToken);
-        },
-        signOut() {
-          user.signOut();
-          setInternalAuthState({
-            type: "signedOut",
-          });
-        },
-        user: omit(authUser, "refreshToken", "accessToken", "accessExpiration"),
-        changePassword: partial(changePassword, user),
+      return createSignedInAuthState({
+        authState: internalAuthState,
+        setInternalAuthState,
+        parseUser,
         refreshUser,
-        verifyEmailAddress: partial(
-          verifyEmailAddress,
-          setInternalAuthState,
-          parseUser,
-          user,
-        ),
-        resendEmailAddressVerification: partial(
-          resendEmailAddressVerification,
-          user,
-        ),
-      };
+      });
     }
 
-    return {
-      type: "signedOut",
-      signIn: partial(
-        signIn,
-        setInternalAuthState,
-        { userPool, storage },
-        parseUser,
-      ),
-      signUp: partial(signUp, userPool),
-      confirmSignUp: partial(confirmSignUp, userPool, storage),
-      resendConfirmation: partial(resendConfirmation, userPool, storage),
-      forgotPassword: partial(forgotPassword, { userPool, storage }),
-      confirmForgotPassword: partial(confirmForgotPassword, {
-        userPool,
-        storage,
-      }),
-      requireNewPasswordComplete:
-        internalAuthState.type === "newPassword"
-          ? partial(
-              requireNewPasswordComplete,
-              setInternalAuthState,
-              parseUser,
-              internalAuthState.user,
-            )
-          : undefined,
-    };
+    return createSignedOutAuthState({
+      userPool,
+      setInternalAuthState,
+      internalAuthState,
+      storage,
+      parseUser,
+    });
   }, [internalAuthState, refreshUser, userPool]);
   return (
     <AuthContext.Provider value={authState}>{children}</AuthContext.Provider>
   );
 }
 
-function useAuthState<TUser>(): AuthState<TUser> {
+function useAuthState<TUser extends AuthAccess>(): AuthState<TUser> {
   const context = useContext(AuthContext);
   invariant(context, "No Auth Context");
   return context;
 }
 
-function useSignedOutAuthState(): SignedOutAuthState {
-  const state = useAuthState();
+function useSignedOutAuthState<
+  TUser extends AuthAccess,
+>(): SignedOutAuthState<TUser> {
+  const state = useAuthState<TUser>();
   invariant(state.type === "signedOut", `Not signed out (was ${state.type})`);
   return state;
 }
 
-function useSignedInAuthState<TUser>(): SignedInAuthState<TUser> {
+function useSignedInAuthState<
+  TUser extends AuthAccess,
+>(): SignedInAuthState<TUser> {
   const state = useAuthState<TUser>();
   invariant(state.type === "signedIn", `Not signed in (was ${state.type})`);
   return state;

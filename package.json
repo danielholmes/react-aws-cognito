@@ -1,6 +1,6 @@
 {
   "name": "@dhau/react-aws-cognito",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "type": "module",
   "sideEffects": false,
   "description": "Context and hooks to manage an AWS Cognito authenticated user in React.",
@@ -10,7 +10,6 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "require": "./dist/index.js",
       "import": "./dist/index.mjs"
     },
     "./package.json": "./package.json"
@@ -27,7 +26,7 @@
     "test": "mocha -w",
     "test:all": "echo 'TODO: mocha'",
     "build:esm": "rollup --config rollup.config.js",
-    "build:cjs": "tsc -p tsconfig.cjs.json",
+    "build:ts": "tsc -p tsconfig.types.json",
     "build": "npm-run-all -s clean -p build:*",
     "npm:publish": "npm publish --access public",
     "deploy": "run-s build npm:publish",

@@ -33,4 +33,10 @@ type InternalAuthState<TUser> =
 
 type InternalAuthStateSetter<TUser> = (state: InternalAuthState<TUser>) => void;
 
-export type { InternalAuthState, InternalAuthStateSetter };
+export type {
+  InternalAuthState,
+  NewPasswordInternalAuthState,
+  SignedOutInternalAuthState,
+  SignedInInternalAuthState,
+  InternalAuthStateSetter,
+};
