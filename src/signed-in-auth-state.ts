@@ -14,6 +14,8 @@ import changePassword from "./model/change-password";
 import { UserParser } from "./model/get-current-user";
 
 type Options<TUser> = {
+  readonly mfaIssuer: string;
+  readonly mfaDeviceName: string;
   readonly authState: SignedInInternalAuthState<TUser>;
   readonly parseUser: UserParser<TUser>;
   readonly setInternalAuthState: InternalAuthStateSetter<TUser>;
@@ -24,6 +26,8 @@ function createSignedInAuthState<TUser>({
   setInternalAuthState,
   parseUser,
   refreshUser,
+  mfaIssuer,
+  mfaDeviceName,
   authState: { user, authUser },
 }: Options<TUser>) {
   return {
@@ -49,9 +53,15 @@ function createSignedInAuthState<TUser>({
     },
     user: omit(authUser, "refreshToken", "accessToken", "accessExpiration"),
     changePassword: partial(changePassword, user),
-    enableMfa: partial(enableMfa, setInternalAuthState, parseUser, user),
+    enableMfa: partial(
+      enableMfa,
+      mfaDeviceName,
+      setInternalAuthState,
+      parseUser,
+      user,
+    ),
     disableMfa: partial(disableMfa, setInternalAuthState, parseUser, user),
-    getMfaCodeUrl: partial(getMfaCodeUrl, user),
+    getMfaCodeUrl: partial(getMfaCodeUrl, mfaIssuer, user),
     refreshUser,
     verifyEmailAddress: partial(
       verifyEmailAddress,

@@ -3,13 +3,14 @@ import { InternalAuthStateSetter } from "./internal-state";
 import { UserParser, getUserData } from "./get-current-user";
 
 async function enableMfa<TUser>(
+  mfaDeviceName: string,
   setInternalAuthState: InternalAuthStateSetter<TUser>,
   parseUser: UserParser<TUser>,
   user: CognitoUser,
   code: string,
 ) {
   await new Promise((resolve, reject) => {
-    user.verifySoftwareToken(code, "Diagno", {
+    user.verifySoftwareToken(code, mfaDeviceName, {
       onSuccess: resolve,
       onFailure: reject,
     });

@@ -38,6 +38,8 @@ type AuthCognitoConfig = {
 };
 
 type AuthProviderProps<TUser> = {
+  readonly mfaDeviceName: string;
+  readonly mfaIssuer: string;
   readonly parseUser: (data: UserData) => TUser;
   readonly cognitoConfig: AuthCognitoConfig;
   readonly children: ReactNode;
@@ -46,6 +48,8 @@ type AuthProviderProps<TUser> = {
 const storage = window.localStorage;
 
 function AuthProvider<TUser>({
+  mfaIssuer,
+  mfaDeviceName,
   cognitoConfig,
   children,
   parseUser: parseDomainUser,
@@ -159,10 +163,12 @@ function AuthProvider<TUser>({
 
     if (internalAuthState.type === "signedIn") {
       return createSignedInAuthState({
+        mfaIssuer,
         authState: internalAuthState,
         setInternalAuthState,
         parseUser,
         refreshUser,
+        mfaDeviceName,
       });
     }
 
