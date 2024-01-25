@@ -1,9 +1,8 @@
 import { CognitoUser } from "amazon-cognito-identity-js";
 import { InternalAuthStateSetter } from "./internal-state";
 import { getUserData, UserParser } from "./get-current-user";
-import { AuthAccess } from "./session-to-auth-access";
 
-async function requireNewPasswordComplete<TUser extends AuthAccess>(
+async function requireNewPasswordComplete<TUser>(
   setInternalAuthState: InternalAuthStateSetter<TUser>,
   parser: UserParser<TUser>,
   user: CognitoUser,

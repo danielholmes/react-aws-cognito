@@ -4,7 +4,6 @@ import {
   InternalAuthStateSetter,
   SignedInInternalAuthState,
 } from "./model/internal-state";
-import { AuthAccess } from "./model/session-to-auth-access";
 import refreshSession from "./model/refresh-session";
 import resendEmailAddressVerification from "./model/resend-email-address-verification";
 import verifyEmailAddress from "./model/verify-email-address";
@@ -14,14 +13,14 @@ import getMfaCodeUrl from "./model/get-mfa-code-url";
 import changePassword from "./model/change-password";
 import { UserParser } from "./model/get-current-user";
 
-type Options<TUser extends AuthAccess> = {
+type Options<TUser> = {
   readonly authState: SignedInInternalAuthState<TUser>;
   readonly parseUser: UserParser<TUser>;
   readonly setInternalAuthState: InternalAuthStateSetter<TUser>;
   readonly refreshUser: () => void;
 };
 
-function createSignedInAuthState<TUser extends AuthAccess>({
+function createSignedInAuthState<TUser>({
   setInternalAuthState,
   parseUser,
   refreshUser,
@@ -67,7 +66,7 @@ function createSignedInAuthState<TUser extends AuthAccess>({
   };
 }
 
-type SignedInAuthState<TUser extends AuthAccess> = ReturnType<
+type SignedInAuthState<TUser> = ReturnType<
   typeof createSignedInAuthState<TUser>
 >;
 

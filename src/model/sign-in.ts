@@ -7,7 +7,6 @@ import {
 } from "amazon-cognito-identity-js";
 import { InternalAuthStateSetter } from "./internal-state";
 import { getUserData, UserParser } from "./get-current-user";
-import { AuthAccess } from "./session-to-auth-access";
 
 type SignInResult =
   | {
@@ -18,7 +17,7 @@ type SignInResult =
       readonly type: "newPassword";
     };
 
-async function signIn<TUser extends AuthAccess>(
+async function signIn<TUser>(
   setInternalAuthState: InternalAuthStateSetter<TUser>,
   {
     userPool,

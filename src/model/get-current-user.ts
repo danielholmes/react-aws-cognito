@@ -6,26 +6,24 @@ import {
 } from "amazon-cognito-identity-js";
 import invariant from "../invariant";
 import { AuthAccess } from "./session-to-auth-access";
+import sessionToAuthAccess from "./session-to-auth-access";
 
 type UserBundle<TUser> = {
   readonly cognitoUser: CognitoUser;
   readonly authUser: TUser;
 };
 
-type UserParser<TUser extends AuthAccess> = (
-  data: UserData,
-  session: CognitoUserSession,
-) => TUser;
+type UserParser<TUser> = (data: UserData, session: CognitoUserSession) => TUser;
 
-async function baseGetUserData<TUser extends AuthAccess>(
+async function baseGetUserData<TUser>(
   user: CognitoUser,
   parseUser: UserParser<TUser>,
   bypassCache: boolean,
-): Promise<TUser> {
+) {
   const session = user.getSignInUserSession();
   invariant(session, "User must have session");
 
-  return new Promise<TUser>((resolve, reject) => {
+  return new Promise<TUser & AuthAccess>((resolve, reject) => {
     user.getUserData(
       (error, data) => {
         if (error) {
@@ -38,17 +36,20 @@ async function baseGetUserData<TUser extends AuthAccess>(
           return;
         }
 
-        resolve(parseUser(data, session));
+        resolve({
+          ...parseUser(data, session),
+          ...sessionToAuthAccess(session),
+        });
       },
       { bypassCache },
     );
   });
 }
 
-async function getUserDataNoCache<TUser extends AuthAccess>(
+async function getUserDataNoCache<TUser>(
   user: CognitoUser,
   parseUser: UserParser<TUser>,
-): Promise<TUser> {
+) {
   return baseGetUserData(user, parseUser, true);
 }
 
@@ -56,15 +57,15 @@ type GetUserOptions = {
   readonly bypassCache?: boolean;
 };
 
-async function getUserData<TUser extends AuthAccess>(
+async function getUserData<TUser>(
   user: CognitoUser,
   parseUser: UserParser<TUser>,
   options?: GetUserOptions,
-): Promise<TUser> {
+) {
   return baseGetUserData(user, parseUser, options?.bypassCache ?? false);
 }
 
-async function getCurrentUser<TUser extends AuthAccess>(
+async function getCurrentUser<TUser>(
   userPool: CognitoUserPool,
   parseUser: UserParser<TUser>,
 ): Promise<UserBundle<TUser> | undefined> {

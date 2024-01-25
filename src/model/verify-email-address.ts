@@ -1,9 +1,8 @@
 import { CognitoUser } from "amazon-cognito-identity-js";
 import { getUserDataNoCache, UserParser } from "./get-current-user";
 import { InternalAuthStateSetter } from "./internal-state";
-import { AuthAccess } from "./session-to-auth-access";
 
-async function verifyEmailAddress<TUser extends AuthAccess>(
+async function verifyEmailAddress<TUser>(
   setInternalAuthState: InternalAuthStateSetter<TUser>,
   parseUser: UserParser<TUser>,
   user: CognitoUser,

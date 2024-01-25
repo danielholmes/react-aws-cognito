@@ -19,9 +19,7 @@ import { isUserNotConfirmedException } from "./model/sign-in";
 import { AuthState } from "./state";
 import { InternalAuthState } from "./model/internal-state";
 import getCurrentUser, { getUserDataNoCache } from "./model/get-current-user";
-import sessionToAuthAccess, {
-  AuthAccess,
-} from "./model/session-to-auth-access";
+import sessionToAuthAccess from "./model/session-to-auth-access";
 import {
   SignedInAuthState,
   createSignedInAuthState,
@@ -39,7 +37,7 @@ type AuthCognitoConfig = {
   readonly userPoolClientId: string;
 };
 
-type AuthProviderProps<TUser extends AuthAccess> = {
+type AuthProviderProps<TUser> = {
   readonly parseUser: (data: UserData) => TUser;
   readonly cognitoConfig: AuthCognitoConfig;
   readonly children: ReactNode;
@@ -47,13 +45,13 @@ type AuthProviderProps<TUser extends AuthAccess> = {
 
 const storage = window.localStorage;
 
-function AuthProvider<TUser extends AuthAccess>({
+function AuthProvider<TUser>({
   cognitoConfig,
   children,
   parseUser: parseDomainUser,
 }: AuthProviderProps<TUser>) {
   const [internalAuthState, setInternalAuthState] = useState<
-    InternalAuthState<TUser & AuthAccess>
+    InternalAuthState<TUser>
   >({
     type: "loading",
   });
@@ -181,23 +179,19 @@ function AuthProvider<TUser extends AuthAccess>({
   );
 }
 
-function useAuthState<TUser extends AuthAccess>(): AuthState<TUser> {
+function useAuthState<TUser>(): AuthState<TUser> {
   const context = useContext(AuthContext);
   invariant(context, "No Auth Context");
   return context;
 }
 
-function useSignedOutAuthState<
-  TUser extends AuthAccess,
->(): SignedOutAuthState<TUser> {
+function useSignedOutAuthState<TUser>(): SignedOutAuthState<TUser> {
   const state = useAuthState<TUser>();
   invariant(state.type === "signedOut", `Not signed out (was ${state.type})`);
   return state;
 }
 
-function useSignedInAuthState<
-  TUser extends AuthAccess,
->(): SignedInAuthState<TUser> {
+function useSignedInAuthState<TUser>(): SignedInAuthState<TUser> {
   const state = useAuthState<TUser>();
   invariant(state.type === "signedIn", `Not signed in (was ${state.type})`);
   return state;

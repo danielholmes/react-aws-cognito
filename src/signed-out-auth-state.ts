@@ -11,11 +11,10 @@ import {
   NewPasswordInternalAuthState,
   InternalAuthStateSetter,
 } from "./model/internal-state";
-import { AuthAccess } from "./model/session-to-auth-access";
 import { UserParser } from "./model/get-current-user";
 import signIn from "./model/sign-in";
 
-type Options<TUser extends AuthAccess> = {
+type Options<TUser> = {
   readonly userPool: CognitoUserPool;
   readonly storage: Storage;
   readonly internalAuthState:
@@ -25,7 +24,7 @@ type Options<TUser extends AuthAccess> = {
   readonly parseUser: UserParser<TUser>;
 };
 
-function createSignedOutAuthState<TUser extends AuthAccess>({
+function createSignedOutAuthState<TUser>({
   internalAuthState,
   userPool,
   setInternalAuthState,
@@ -60,7 +59,7 @@ function createSignedOutAuthState<TUser extends AuthAccess>({
   };
 }
 
-type SignedOutAuthState<TUser extends AuthAccess> = ReturnType<
+type SignedOutAuthState<TUser> = ReturnType<
   typeof createSignedOutAuthState<TUser>
 >;
 

@@ -1,4 +1,3 @@
-import { AuthAccess } from "./model/session-to-auth-access";
 import { SignedInAuthState } from "./signed-in-auth-state";
 import { SignedOutAuthState } from "./signed-out-auth-state";
 
@@ -17,7 +16,7 @@ type SignUpVariables = {
   readonly extraAttributes?: Record<string, string>;
 };
 
-type AuthState<TUser extends AuthAccess> =
+type AuthState<TUser> =
   | LoadingAuthState
   | ErrorAuthState
   | SignedInAuthState<TUser>
