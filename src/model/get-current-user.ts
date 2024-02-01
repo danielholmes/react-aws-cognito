@@ -10,7 +10,9 @@ import sessionToAuthAccess from "./session-to-auth-access";
 
 type UserBundle<TUser> = {
   readonly cognitoUser: CognitoUser;
-  readonly authUser: TUser;
+  readonly authUser: TUser & {
+    readonly isMfaEnabled: boolean;
+  };
 };
 
 type UserParser<TUser> = (data: UserData, session: CognitoUserSession) => TUser;
@@ -39,6 +41,8 @@ async function baseGetUserData<TUser>(
         resolve({
           ...parseUser(data, session),
           ...sessionToAuthAccess(session),
+          // Typing is wrong for lib - PreferredMfaSetting should be string | undefined
+          isMfaEnabled: data.PreferredMfaSetting !== undefined,
         });
       },
       { bypassCache },

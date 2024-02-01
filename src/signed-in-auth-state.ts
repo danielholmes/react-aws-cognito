@@ -60,7 +60,7 @@ function createSignedInAuthState<TUser>({
       parseUser,
       user,
     ),
-    disableMfa: partial(disableMfa, setInternalAuthState, parseUser, user),
+    disableMfa: async () => disableMfa(setInternalAuthState, parseUser, user),
     getMfaCodeUrl: partial(getMfaCodeUrl, mfaIssuer, user),
     refreshUser,
     verifyEmailAddress: partial(

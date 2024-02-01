@@ -8,7 +8,9 @@ function sessionToAuthAccess(session: CognitoUserSession) {
   };
 }
 
-type AuthAccess = ReturnType<typeof sessionToAuthAccess>;
+type AuthAccess = ReturnType<typeof sessionToAuthAccess> & {
+  readonly isMfaEnabled: boolean;
+};
 
 export type { AuthAccess };
 export default sessionToAuthAccess;

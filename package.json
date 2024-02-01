@@ -1,10 +1,10 @@
 {
   "name": "@dhau/react-aws-cognito",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "type": "module",
   "sideEffects": false,
   "description": "Context and hooks to manage an AWS Cognito authenticated user in React.",
-  "main": "./dist/index.js",
+  "main": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "module": "./dist/index.mjs",
   "exports": {
@@ -35,7 +35,7 @@
   "author": "Daniel Holmes",
   "license": "MIT",
   "dependencies": {
-    "@dhau/lang-extras": "^0.0.4",
+    "@dhau/lang-extras": "^0.0.5",
     "date-fns": "^3.3.1"
   },
   "devDependencies": {
@@ -43,7 +43,7 @@
     "@types/lodash-es": "^4.17.6",
     "@types/react": ">=18.0.0",
     "amazon-cognito-identity-js": "^6.0.0",
-    "husky": "^8.0.3",
+    "husky": "^9.0.7",
     "lint-staged": "^15.2.0",
     "msw": "^2.1.4",
     "npm-run-all": "^4.1.5",
