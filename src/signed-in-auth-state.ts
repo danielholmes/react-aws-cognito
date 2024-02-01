@@ -1,5 +1,4 @@
 import { omit, partial } from "lodash-es";
-import { sub, isFuture } from "date-fns";
 import {
   InternalAuthStateSetter,
   SignedInInternalAuthState,
@@ -34,10 +33,10 @@ function createSignedInAuthState<TUser>({
     type: "signedIn" as const,
     async getValidAccessToken() {
       const { accessToken, accessExpiration, refreshToken } = authUser;
-      const refreshTime = sub(accessExpiration, { minutes: 3 });
+      const refreshTime = accessExpiration.getTime() - 3 * 60 * 1000;
 
       // Refresh time in the future, use current access token.
-      if (isFuture(refreshTime)) {
+      if (refreshTime > new Date().getTime()) {
         return accessToken;
       }
 
