@@ -15,6 +15,10 @@ type SignInResult =
     }
   | {
       readonly type: "newPassword";
+    }
+  | {
+      readonly type: "mfa";
+      readonly user: CognitoUser;
     };
 
 async function signIn<TUser>(
@@ -51,6 +55,9 @@ async function signIn<TUser>(
           user,
         });
         resolve({ type: "newPassword" });
+      },
+      totpRequired() {
+        resolve({ type: "mfa", user });
       },
     });
   });
