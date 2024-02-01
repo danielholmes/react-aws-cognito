@@ -25,12 +25,18 @@ type NewPasswordInternalAuthState = {
   readonly user: CognitoUser;
 };
 
+type MfaRequiredInternalAuthState = {
+  readonly type: "mfaRequired";
+  readonly user: CognitoUser;
+};
+
 type InternalAuthState<TUser> =
   | LoadingInternalAuthState
   | ErrorInternalAuthState
   | SignedInInternalAuthState<TUser>
   | SignedOutInternalAuthState
-  | NewPasswordInternalAuthState;
+  | NewPasswordInternalAuthState
+  | MfaRequiredInternalAuthState;
 
 type InternalAuthStateSetter<TUser> = (
   state: InternalAuthState<TUser & AuthAccess>,
@@ -40,6 +46,7 @@ export type {
   InternalAuthState,
   NewPasswordInternalAuthState,
   SignedOutInternalAuthState,
+  MfaRequiredInternalAuthState,
   SignedInInternalAuthState,
   InternalAuthStateSetter,
 };

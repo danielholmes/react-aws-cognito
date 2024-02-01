@@ -10,15 +10,18 @@ import {
   SignedOutInternalAuthState,
   NewPasswordInternalAuthState,
   InternalAuthStateSetter,
+  MfaRequiredInternalAuthState,
 } from "./model/internal-state";
 import { UserParser } from "./model/get-current-user";
 import signIn from "./model/sign-in";
+import requireMfaComplete from "./model/require-mfa-complete";
 
 type Options<TUser> = {
   readonly userPool: CognitoUserPool;
   readonly storage: Storage;
   readonly internalAuthState:
     | SignedOutInternalAuthState
+    | MfaRequiredInternalAuthState
     | NewPasswordInternalAuthState;
   readonly setInternalAuthState: InternalAuthStateSetter<TUser>;
   readonly parseUser: UserParser<TUser>;
@@ -47,6 +50,15 @@ function createSignedOutAuthState<TUser>({
       userPool,
       storage,
     }),
+    requireMfaComplete:
+      internalAuthState.type === "mfaRequired"
+        ? partial(
+            requireMfaComplete,
+            setInternalAuthState,
+            parseUser,
+            internalAuthState.user,
+          )
+        : undefined,
     requireNewPasswordComplete:
       internalAuthState.type === "newPassword"
         ? partial(

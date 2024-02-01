@@ -18,7 +18,6 @@ type SignInResult =
     }
   | {
       readonly type: "mfa";
-      readonly user: CognitoUser;
     };
 
 async function signIn<TUser>(
@@ -30,7 +29,7 @@ async function signIn<TUser>(
   parseUser: UserParser<TUser>,
   email: string,
   password: string,
-): Promise<SignInResult> {
+) {
   const authDetails = new AuthenticationDetails({
     Username: email,
     Password: password,
@@ -57,7 +56,11 @@ async function signIn<TUser>(
         resolve({ type: "newPassword" });
       },
       totpRequired() {
-        resolve({ type: "mfa", user });
+        setInternalAuthState({
+          type: "mfaRequired",
+          user,
+        });
+        resolve({ type: "mfa" });
       },
     });
   });
