@@ -1,6 +1,6 @@
 {
   "name": "@dhau/react-aws-cognito",
-  "version": "0.0.16",
+  "version": "0.0.17",
   "type": "module",
   "sideEffects": false,
   "description": "Context and hooks to manage an AWS Cognito authenticated user in React.",

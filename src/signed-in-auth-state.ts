@@ -44,8 +44,8 @@ function createSignedInAuthState<TUser>({
       // refreshed token for immediate use.
       return refreshSession(user, refreshToken);
     },
-    signOut() {
-      user.signOut();
+    async signOut() {
+      await new Promise<void>((resolve) => user.signOut(resolve));
       setInternalAuthState({
         type: "signedOut",
       });

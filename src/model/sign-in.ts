@@ -42,11 +42,17 @@ async function signIn<TUser>(
     Pool: userPool,
     Storage: storage,
   });
+
+  const signOut = async () => {
+    await new Promise<void>((resolve) => {
+      user.signOut(resolve);
+    });
+    setInternalAuthState({
+      type: "signedOut",
+    });
+  };
+
   const result = await new Promise<SignInResult>((resolve, reject) => {
-    const signOut = () =>
-      new Promise<void>((resolve) => {
-        user.signOut(resolve);
-      });
     user.authenticateUser(authDetails, {
       onSuccess(session) {
         resolve({
