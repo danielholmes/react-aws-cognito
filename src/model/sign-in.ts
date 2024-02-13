@@ -12,15 +12,15 @@ type SignInResult =
   | {
       readonly type: "success";
       readonly accessToken: string;
-      readonly signOut: () => void;
+      readonly signOut: () => Promise<void>;
     }
   | {
       readonly type: "newPassword";
-      readonly signOut: () => void;
+      readonly signOut: () => Promise<void>;
     }
   | {
       readonly type: "mfa";
-      readonly signOut: () => void;
+      readonly signOut: () => Promise<void>;
     };
 
 async function signIn<TUser>(
@@ -43,12 +43,16 @@ async function signIn<TUser>(
     Storage: storage,
   });
   const result = await new Promise<SignInResult>((resolve, reject) => {
+    const signOut = () =>
+      new Promise<void>((resolve) => {
+        user.signOut(resolve);
+      });
     user.authenticateUser(authDetails, {
       onSuccess(session) {
         resolve({
           type: "success",
           accessToken: session.getAccessToken().getJwtToken(),
-          signOut: user.signOut,
+          signOut,
         });
       },
       onFailure: reject,
@@ -57,14 +61,14 @@ async function signIn<TUser>(
           type: "newPassword",
           user,
         });
-        resolve({ type: "newPassword", signOut: user.signOut });
+        resolve({ type: "newPassword", signOut });
       },
       totpRequired() {
         setInternalAuthState({
           type: "mfaRequired",
           user,
         });
-        resolve({ type: "mfa", signOut: user.signOut });
+        resolve({ type: "mfa", signOut });
       },
     });
   });
