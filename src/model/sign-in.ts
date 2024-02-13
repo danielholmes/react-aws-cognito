@@ -12,12 +12,15 @@ type SignInResult =
   | {
       readonly type: "success";
       readonly accessToken: string;
+      readonly signOut: () => void;
     }
   | {
       readonly type: "newPassword";
+      readonly signOut: () => void;
     }
   | {
       readonly type: "mfa";
+      readonly signOut: () => void;
     };
 
 async function signIn<TUser>(
@@ -45,6 +48,7 @@ async function signIn<TUser>(
         resolve({
           type: "success",
           accessToken: session.getAccessToken().getJwtToken(),
+          signOut: user.signOut,
         });
       },
       onFailure: reject,
@@ -53,14 +57,14 @@ async function signIn<TUser>(
           type: "newPassword",
           user,
         });
-        resolve({ type: "newPassword" });
+        resolve({ type: "newPassword", signOut: user.signOut });
       },
       totpRequired() {
         setInternalAuthState({
           type: "mfaRequired",
           user,
         });
-        resolve({ type: "mfa" });
+        resolve({ type: "mfa", signOut: user.signOut });
       },
     });
   });
