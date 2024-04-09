@@ -7,6 +7,7 @@ import {
 } from "amazon-cognito-identity-js";
 import { InternalAuthStateSetter } from "./internal-state";
 import { getUserData, UserParser } from "./get-current-user";
+import { AuthAccess } from "./session-to-auth-access";
 
 type SignInResult =
   | {
@@ -23,13 +24,20 @@ type SignInResult =
       readonly signOut: () => Promise<void>;
     };
 
+type Services = {
+  readonly userPool: CognitoUserPool;
+  readonly storage: ICognitoStorage;
+};
+
+type Options<TUser> = {
+  readonly onSignIn: ((user: TUser & AuthAccess) => void) | undefined;
+};
+
 async function signIn<TUser>(
   setInternalAuthState: InternalAuthStateSetter<TUser>,
-  {
-    userPool,
-    storage,
-  }: { userPool: CognitoUserPool; storage: ICognitoStorage },
+  { userPool, storage }: Services,
   parseUser: UserParser<TUser>,
+  { onSignIn }: Options<TUser>,
   email: string,
   password: string,
 ) {
@@ -85,6 +93,7 @@ async function signIn<TUser>(
       user,
       authUser,
     });
+    onSignIn?.(authUser);
   }
 
   return result;

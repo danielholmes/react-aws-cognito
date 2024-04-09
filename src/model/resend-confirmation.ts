@@ -8,7 +8,7 @@ async function resendConfirmation(
   userPool: CognitoUserPool,
   storage: ICognitoStorage,
   emailAddress: string,
-): Promise<void> {
+) {
   const user = new CognitoUser({
     Username: emailAddress,
     Pool: userPool,

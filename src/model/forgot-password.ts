@@ -10,7 +10,7 @@ async function forgotPassword(
     storage,
   }: { userPool: CognitoUserPool; storage: ICognitoStorage },
   email: string,
-): Promise<void> {
+) {
   const user = new CognitoUser({
     Username: email,
     Pool: userPool,

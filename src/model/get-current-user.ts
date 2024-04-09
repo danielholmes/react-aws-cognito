@@ -10,9 +10,7 @@ import sessionToAuthAccess from "./session-to-auth-access";
 
 type UserBundle<TUser> = {
   readonly cognitoUser: CognitoUser;
-  readonly authUser: TUser & {
-    readonly isMfaEnabled: boolean;
-  };
+  readonly authUser: TUser & AuthAccess;
 };
 
 type UserParser<TUser> = (data: UserData, session: CognitoUserSession) => TUser;

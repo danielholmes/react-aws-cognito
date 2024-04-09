@@ -19,7 +19,9 @@ import { isUserNotConfirmedException } from "./model/sign-in";
 import { AuthState } from "./state";
 import { InternalAuthState } from "./model/internal-state";
 import getCurrentUser, { getUserDataNoCache } from "./model/get-current-user";
-import sessionToAuthAccess from "./model/session-to-auth-access";
+import sessionToAuthAccess, {
+  AuthAccess,
+} from "./model/session-to-auth-access";
 import {
   SignedInAuthState,
   createSignedInAuthState,
@@ -43,6 +45,7 @@ type AuthProviderProps<TUser> = {
   readonly parseUser: (data: UserData) => TUser;
   readonly cognitoConfig: AuthCognitoConfig;
   readonly children: ReactNode;
+  readonly onSignIn?: (user: TUser & AuthAccess) => void;
 };
 
 const storage = window.localStorage;
@@ -53,6 +56,7 @@ function AuthProvider<TUser>({
   cognitoConfig,
   children,
   parseUser: parseDomainUser,
+  onSignIn,
 }: AuthProviderProps<TUser>) {
   const [internalAuthState, setInternalAuthState] = useState<
     InternalAuthState<TUser>
@@ -106,7 +110,9 @@ function AuthProvider<TUser>({
   useEffect(() => {
     let waiting = true;
     (async () => {
-      let current;
+      let current:
+        | Awaited<ReturnType<typeof getCurrentUser<TUser>>>
+        | undefined;
       try {
         current = await getCurrentUser(userPool, parseUser);
       } catch (e) {
@@ -178,6 +184,7 @@ function AuthProvider<TUser>({
       internalAuthState,
       storage,
       parseUser,
+      onSignIn,
     });
   }, [internalAuthState, refreshUser, userPool]);
   return (

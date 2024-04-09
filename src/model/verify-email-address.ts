@@ -7,7 +7,7 @@ async function verifyEmailAddress<TUser>(
   parseUser: UserParser<TUser>,
   user: CognitoUser,
   code: string,
-): Promise<void> {
+) {
   await new Promise<void>((resolve, reject) => {
     user.verifyAttribute("email", code, {
       onSuccess: () => resolve(),

@@ -8,7 +8,7 @@ import { SignUpVariables } from "../state";
 async function signUp(
   userPool: CognitoUserPool,
   { emailAddress, password, extraAttributes }: SignUpVariables,
-): Promise<void> {
+) {
   await new Promise<void>((resolve, reject) => {
     userPool.signUp(
       emailAddress,

@@ -15,6 +15,7 @@ import {
 import { UserParser } from "./model/get-current-user";
 import signIn from "./model/sign-in";
 import requireMfaComplete from "./model/require-mfa-complete";
+import { AuthAccess } from "./model/session-to-auth-access";
 
 type Options<TUser> = {
   readonly userPool: CognitoUserPool;
@@ -25,6 +26,7 @@ type Options<TUser> = {
     | NewPasswordInternalAuthState;
   readonly setInternalAuthState: InternalAuthStateSetter<TUser>;
   readonly parseUser: UserParser<TUser>;
+  readonly onSignIn: ((user: TUser & AuthAccess) => void) | undefined;
 };
 
 function createSignedOutAuthState<TUser>({
@@ -33,6 +35,7 @@ function createSignedOutAuthState<TUser>({
   setInternalAuthState,
   parseUser,
   storage,
+  onSignIn,
 }: Options<TUser>) {
   return {
     type: "signedOut" as const,
@@ -41,6 +44,7 @@ function createSignedOutAuthState<TUser>({
       setInternalAuthState,
       { userPool, storage },
       parseUser,
+      { onSignIn },
     ),
     signUp: partial(signUp, userPool),
     confirmSignUp: partial(confirmSignUp, userPool, storage),
@@ -57,6 +61,7 @@ function createSignedOutAuthState<TUser>({
             setInternalAuthState,
             parseUser,
             internalAuthState.user,
+            { onSignIn },
           )
         : undefined,
     requireNewPasswordComplete:
@@ -66,6 +71,7 @@ function createSignedOutAuthState<TUser>({
             setInternalAuthState,
             parseUser,
             internalAuthState.user,
+            { onSignIn },
           )
         : undefined,
   };

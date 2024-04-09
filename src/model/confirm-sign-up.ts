@@ -9,7 +9,7 @@ async function confirmSignUp(
   storage: ICognitoStorage,
   emailAddress: string,
   code: string,
-): Promise<void> {
+) {
   const user = new CognitoUser({
     Username: emailAddress,
     Pool: userPool,

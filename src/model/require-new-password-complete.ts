@@ -1,13 +1,19 @@
 import { CognitoUser } from "amazon-cognito-identity-js";
 import { InternalAuthStateSetter } from "./internal-state";
 import { getUserData, UserParser } from "./get-current-user";
+import { AuthAccess } from "./session-to-auth-access";
+
+type Options<TUser> = {
+  readonly onSignIn: ((user: TUser & AuthAccess) => void) | undefined;
+};
 
 async function requireNewPasswordComplete<TUser>(
   setInternalAuthState: InternalAuthStateSetter<TUser>,
   parser: UserParser<TUser>,
   user: CognitoUser,
+  { onSignIn }: Options<TUser>,
   password: string,
-): Promise<void> {
+) {
   // TODO: Look at source - use UserPool instead
   // https://github.com/aws-amplify/amplify-js/blob/master/packages/
   // amazon-cognito-identity-js/src/CognitoUser.js
@@ -27,6 +33,7 @@ async function requireNewPasswordComplete<TUser>(
     user,
     authUser,
   });
+  onSignIn?.(authUser);
 }
 
 export default requireNewPasswordComplete;

@@ -4,7 +4,7 @@ async function changePassword(
   user: CognitoUser,
   currentPassword: string,
   newPassword: string,
-): Promise<void> {
+) {
   return new Promise<void>((resolve, reject) => {
     user.changePassword(currentPassword, newPassword, (error) => {
       if (error) {
