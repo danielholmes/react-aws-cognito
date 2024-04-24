@@ -1,7 +1,7 @@
 import { CognitoUser } from "amazon-cognito-identity-js";
-import { InternalAuthStateSetter } from "./internal-state";
-import { UserParser, getUserData } from "./get-current-user";
-import { AuthAccess } from "./session-to-auth-access";
+import { InternalAuthStateSetter } from "./internal-state.ts";
+import { UserParser, getUserData } from "./get-current-user.ts";
+import { AuthAccess } from "./session-to-auth-access.ts";
 
 type Options<TUser> = {
   readonly onSignIn: ((user: TUser & AuthAccess) => void) | undefined;

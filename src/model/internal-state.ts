@@ -1,5 +1,5 @@
 import { CognitoUser } from "amazon-cognito-identity-js";
-import { AuthAccess } from "./session-to-auth-access";
+import { AuthAccess } from "./session-to-auth-access.ts";
 
 type LoadingInternalAuthState = {
   readonly type: "loading";

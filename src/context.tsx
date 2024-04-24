@@ -10,26 +10,29 @@ import {
 import {
   CognitoUserPool,
   CognitoUserSession,
+  ICognitoStorage,
   NodeCallback,
   UserData,
 } from "amazon-cognito-identity-js";
 import { unknownToString } from "@dhau/lang-extras";
-import invariant from "./invariant";
-import { isUserNotConfirmedException } from "./model/sign-in";
-import { AuthState } from "./state";
-import { InternalAuthState } from "./model/internal-state";
-import getCurrentUser, { getUserDataNoCache } from "./model/get-current-user";
+import invariant from "./invariant.ts";
+import { isUserNotConfirmedException } from "./model/sign-in.ts";
+import { AuthState } from "./state.ts";
+import { InternalAuthState } from "./model/internal-state.ts";
+import getCurrentUser, {
+  getUserDataNoCache,
+} from "./model/get-current-user.ts";
 import sessionToAuthAccess, {
   AuthAccess,
-} from "./model/session-to-auth-access";
+} from "./model/session-to-auth-access.ts";
 import {
   SignedInAuthState,
   createSignedInAuthState,
-} from "./signed-in-auth-state";
+} from "./signed-in-auth-state.ts";
 import {
   SignedOutAuthState,
   createSignedOutAuthState,
-} from "./signed-out-auth-state";
+} from "./signed-out-auth-state.ts";
 
 // Can't type this. context created on file load but user type provided on runtime.
 const AuthContext = createContext<AuthState<any> | undefined>(undefined);
@@ -46,9 +49,8 @@ type AuthProviderProps<TUser> = {
   readonly cognitoConfig: AuthCognitoConfig;
   readonly children: ReactNode;
   readonly onSignIn?: (user: TUser & AuthAccess) => void;
+  readonly storage?: ICognitoStorage;
 };
-
-const storage = window.localStorage;
 
 function AuthProvider<TUser>({
   mfaIssuer,
@@ -57,6 +59,7 @@ function AuthProvider<TUser>({
   children,
   parseUser: parseDomainUser,
   onSignIn,
+  storage: providedStorage,
 }: AuthProviderProps<TUser>) {
   const [internalAuthState, setInternalAuthState] = useState<
     InternalAuthState<TUser>
@@ -74,6 +77,10 @@ function AuthProvider<TUser>({
     [parseDomainUser],
   );
 
+  const storage = useMemo(
+    () => providedStorage || window.localStorage,
+    [providedStorage],
+  );
   const userPool = useMemo(
     () =>
       new CognitoUserPool(
@@ -104,7 +111,7 @@ function AuthProvider<TUser>({
           callback(error, data);
         },
       ),
-    [cognitoConfig],
+    [cognitoConfig, storage],
   );
 
   useEffect(() => {
@@ -186,7 +193,7 @@ function AuthProvider<TUser>({
       parseUser,
       onSignIn,
     });
-  }, [internalAuthState, refreshUser, userPool]);
+  }, [internalAuthState, storage, refreshUser, userPool]);
   return (
     <AuthContext.Provider value={authState}>{children}</AuthContext.Provider>
   );

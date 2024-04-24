@@ -1,25 +1,25 @@
-import { CognitoUserPool } from "amazon-cognito-identity-js";
+import { CognitoUserPool, ICognitoStorage } from "amazon-cognito-identity-js";
 import { partial } from "lodash-es";
-import signUp from "./model/sign-up";
-import confirmSignUp from "./model/confirm-sign-up";
-import resendConfirmation from "./model/resend-confirmation";
-import requireNewPasswordComplete from "./model/require-new-password-complete";
-import forgotPassword from "./model/forgot-password";
-import confirmForgotPassword from "./model/confirm-forgot-password";
+import signUp from "./model/sign-up.ts";
+import confirmSignUp from "./model/confirm-sign-up.ts";
+import resendConfirmation from "./model/resend-confirmation.ts";
+import requireNewPasswordComplete from "./model/require-new-password-complete.ts";
+import forgotPassword from "./model/forgot-password.ts";
+import confirmForgotPassword from "./model/confirm-forgot-password.ts";
 import {
   SignedOutInternalAuthState,
   NewPasswordInternalAuthState,
   InternalAuthStateSetter,
   MfaRequiredInternalAuthState,
-} from "./model/internal-state";
-import { UserParser } from "./model/get-current-user";
-import signIn from "./model/sign-in";
-import requireMfaComplete from "./model/require-mfa-complete";
-import { AuthAccess } from "./model/session-to-auth-access";
+} from "./model/internal-state.ts";
+import { UserParser } from "./model/get-current-user.ts";
+import signIn from "./model/sign-in.ts";
+import requireMfaComplete from "./model/require-mfa-complete.ts";
+import { AuthAccess } from "./model/session-to-auth-access.ts";
 
 type Options<TUser> = {
   readonly userPool: CognitoUserPool;
-  readonly storage: Storage;
+  readonly storage: ICognitoStorage;
   readonly internalAuthState:
     | SignedOutInternalAuthState
     | MfaRequiredInternalAuthState

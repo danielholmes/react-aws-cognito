@@ -1,6 +1,6 @@
 import { CognitoUser } from "amazon-cognito-identity-js";
-import { getUserDataNoCache, UserParser } from "./get-current-user";
-import { InternalAuthStateSetter } from "./internal-state";
+import { getUserDataNoCache, UserParser } from "./get-current-user.ts";
+import { InternalAuthStateSetter } from "./internal-state.ts";
 
 async function verifyEmailAddress<TUser>(
   setInternalAuthState: InternalAuthStateSetter<TUser>,

@@ -2,15 +2,15 @@ import { omit, partial } from "lodash-es";
 import {
   InternalAuthStateSetter,
   SignedInInternalAuthState,
-} from "./model/internal-state";
-import refreshSession from "./model/refresh-session";
-import resendEmailAddressVerification from "./model/resend-email-address-verification";
-import verifyEmailAddress from "./model/verify-email-address";
-import enableMfa from "./model/enable-mfa";
-import disableMfa from "./model/disable-mfa";
-import getMfaCodeUrl from "./model/get-mfa-code-url";
-import changePassword from "./model/change-password";
-import { UserParser } from "./model/get-current-user";
+} from "./model/internal-state.ts";
+import refreshSession from "./model/refresh-session.ts";
+import resendEmailAddressVerification from "./model/resend-email-address-verification.ts";
+import verifyEmailAddress from "./model/verify-email-address.ts";
+import enableMfa from "./model/enable-mfa.ts";
+import disableMfa from "./model/disable-mfa.ts";
+import getMfaCodeUrl from "./model/get-mfa-code-url.ts";
+import changePassword from "./model/change-password.ts";
+import { UserParser } from "./model/get-current-user.ts";
 
 type Options<TUser> = {
   readonly mfaIssuer: string;

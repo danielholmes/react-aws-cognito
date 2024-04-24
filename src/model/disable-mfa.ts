@@ -1,6 +1,6 @@
 import { CognitoUser } from "amazon-cognito-identity-js";
-import { InternalAuthStateSetter } from "./internal-state";
-import { UserParser, getUserData } from "./get-current-user";
+import { InternalAuthStateSetter } from "./internal-state.ts";
+import { UserParser, getUserData } from "./get-current-user.ts";
 
 async function disableMfa<TUser>(
   setInternalAuthState: InternalAuthStateSetter<TUser>,

@@ -1,5 +1,5 @@
-import { SignedInAuthState } from "./signed-in-auth-state";
-import { SignedOutAuthState } from "./signed-out-auth-state";
+import { SignedInAuthState } from "./signed-in-auth-state.ts";
+import { SignedOutAuthState } from "./signed-out-auth-state.ts";
 
 type LoadingAuthState = {
   readonly type: "loading";

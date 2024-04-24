@@ -1,13 +1,12 @@
-/* eslint-disable @typescript-eslint/naming-convention */
 import {
   AuthenticationDetails,
   CognitoUser,
   CognitoUserPool,
   ICognitoStorage,
 } from "amazon-cognito-identity-js";
-import { InternalAuthStateSetter } from "./internal-state";
-import { getUserData, UserParser } from "./get-current-user";
-import { AuthAccess } from "./session-to-auth-access";
+import { InternalAuthStateSetter } from "./internal-state.ts";
+import { getUserData, UserParser } from "./get-current-user.ts";
+import { AuthAccess } from "./session-to-auth-access.ts";
 
 type SignInResult =
   | {

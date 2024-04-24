@@ -5,8 +5,8 @@ import {
   UserData,
 } from "amazon-cognito-identity-js";
 import invariant from "../invariant";
-import { AuthAccess } from "./session-to-auth-access";
-import sessionToAuthAccess from "./session-to-auth-access";
+import { AuthAccess } from "./session-to-auth-access.ts";
+import sessionToAuthAccess from "./session-to-auth-access.ts";
 
 type UserBundle<TUser> = {
   readonly cognitoUser: CognitoUser;

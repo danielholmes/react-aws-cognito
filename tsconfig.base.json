@@ -16,6 +16,7 @@
     "skipLibCheck": true,
     "jsx": "react-jsx",
     "strictPropertyInitialization": false,
+    "allowImportingTsExtensions": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
