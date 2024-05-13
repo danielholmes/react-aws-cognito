@@ -1,12 +1,13 @@
 import typescript from "@rollup/plugin-typescript";
-import packageJson from "./package.json" assert { type: "json" };
+// Doesn't work node 22 yet
+// import packageJson from "./package.json" assert { type: "json" };
 
 export default [
   {
     input: "src/index.ts",
     output: [
       {
-        file: packageJson.module,
+        file: "./dist/index.mjs",
         format: "es",
         sourcemap: false,
       }

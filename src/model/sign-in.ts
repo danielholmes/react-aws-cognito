@@ -8,11 +8,11 @@ import { InternalAuthStateSetter } from "./internal-state.ts";
 import { getUserData, UserParser } from "./get-current-user.ts";
 import { AuthAccess } from "./session-to-auth-access.ts";
 
-type SignInResult =
+type SignInResult<TUser> =
   | {
       readonly type: "success";
-      readonly accessToken: string;
       readonly signOut: () => Promise<void>;
+      readonly authUser: TUser & AuthAccess;
     }
   | {
       readonly type: "newPassword";
@@ -59,13 +59,14 @@ async function signIn<TUser>(
     });
   };
 
-  const result = await new Promise<SignInResult>((resolve, reject) => {
+  const result = await new Promise<SignInResult<TUser>>((resolve, reject) => {
     user.authenticateUser(authDetails, {
-      onSuccess(session) {
+      async onSuccess() {
+        const authUser = await getUserData(user, parseUser);
         resolve({
           type: "success",
-          accessToken: session.getAccessToken().getJwtToken(),
           signOut,
+          authUser,
         });
       },
       onFailure: reject,
@@ -86,13 +87,12 @@ async function signIn<TUser>(
     });
   });
   if (result.type === "success") {
-    const authUser = await getUserData(user, parseUser);
     setInternalAuthState({
       type: "signedIn",
       user,
-      authUser,
+      authUser: result.authUser,
     });
-    onSignIn?.(authUser);
+    onSignIn?.(result.authUser);
   }
 
   return result;
