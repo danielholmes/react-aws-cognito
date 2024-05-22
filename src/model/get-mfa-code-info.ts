@@ -30,4 +30,5 @@ async function getMfaCodeInfo(
   });
 }
 
+export type { MfaCodeInfo };
 export default getMfaCodeInfo;
