@@ -8,7 +8,7 @@ import resendEmailAddressVerification from "./model/resend-email-address-verific
 import verifyEmailAddress from "./model/verify-email-address.ts";
 import enableMfa from "./model/enable-mfa.ts";
 import disableMfa from "./model/disable-mfa.ts";
-import getMfaCodeUrl from "./model/get-mfa-code-url.ts";
+import getMfaCodeInfo from "./model/get-mfa-code-info.ts";
 import changePassword from "./model/change-password.ts";
 import { UserParser } from "./model/get-current-user.ts";
 
@@ -60,7 +60,7 @@ function createSignedInAuthState<TUser>({
       user,
     ),
     disableMfa: async () => disableMfa(setInternalAuthState, parseUser, user),
-    getMfaCodeUrl: partial(getMfaCodeUrl, mfaIssuer, user),
+    getMfaCodeInfo: partial(getMfaCodeInfo, mfaIssuer, user),
     refreshUser,
     verifyEmailAddress: partial(
       verifyEmailAddress,

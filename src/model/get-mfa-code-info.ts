@@ -1,11 +1,16 @@
 import { CognitoUser } from "amazon-cognito-identity-js";
 
-async function getMfaCodeUrl(
+type MfaCodeInfo = {
+  readonly secretCode: string;
+  readonly qrCodeUri: string;
+};
+
+async function getMfaCodeInfo(
   issuer: string,
   user: CognitoUser,
   emailAddress: string,
 ) {
-  return new Promise<string>((resolve, reject) => {
+  return new Promise<MfaCodeInfo>((resolve, reject) => {
     user.associateSoftwareToken({
       associateSecretCode: (secretCode: string) => {
         const encodedIssuer = encodeURIComponent(issuer);
@@ -15,11 +20,14 @@ async function getMfaCodeUrl(
         const qrCodeUri = `otpauth://totp/${encodedIssuer}:${encodeURIComponent(
           emailAddress,
         )}?secret=${encodeURIComponent(secretCode)}&issuer=${encodedIssuer}`;
-        resolve(qrCodeUri);
+        resolve({
+          secretCode,
+          qrCodeUri,
+        });
       },
       onFailure: reject,
     });
   });
 }
 
-export default getMfaCodeUrl;
+export default getMfaCodeInfo;
