@@ -1,4 +1,4 @@
-import { SignedInAuthState, MfaCodeInfo } from "./signed-in-auth-state.ts";
+import { SignedInAuthState } from "./signed-in-auth-state.ts";
 import { SignedOutAuthState } from "./signed-out-auth-state.ts";
 
 type LoadingAuthState = {
@@ -22,4 +22,4 @@ type AuthState<TUser> =
   | SignedInAuthState<TUser>
   | SignedOutAuthState<TUser>;
 
-export type { MfaCodeInfo, AuthState, SignUpVariables };
+export type { AuthState, SignUpVariables };

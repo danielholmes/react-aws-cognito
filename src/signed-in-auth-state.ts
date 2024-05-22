@@ -8,7 +8,7 @@ import resendEmailAddressVerification from "./model/resend-email-address-verific
 import verifyEmailAddress from "./model/verify-email-address.ts";
 import enableMfa from "./model/enable-mfa.ts";
 import disableMfa from "./model/disable-mfa.ts";
-import getMfaCodeInfo, { MfaCodeInfo } from "./model/get-mfa-code-info.ts";
+import getMfaCodeInfo from "./model/get-mfa-code-info.ts";
 import changePassword from "./model/change-password.ts";
 import { UserParser } from "./model/get-current-user.ts";
 
@@ -79,5 +79,5 @@ type SignedInAuthState<TUser> = ReturnType<
   typeof createSignedInAuthState<TUser>
 >;
 
-export type { MfaCodeInfo, SignedInAuthState };
+export type { SignedInAuthState };
 export { createSignedInAuthState };
